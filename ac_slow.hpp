@@ -62,7 +62,7 @@ public:
     }
 
     ACS_State* Get_FailLink() const { return _fail_link; }
-    uint32 Get_GotoNum() const { return _goto_map.size(); }
+    uint32 Get_GotoNum() const { return static_cast<uint32>(_goto_map.size()); }
     uint32 Get_ID() const { return _id; }
     uint32 Get_Depth() const { return _depth; }
     const ACS_Goto_Map& Get_Goto_Map(void) const { return _goto_map; }
@@ -101,7 +101,7 @@ public:
         return r;
     }
 
-    Match_Result Match(const char* s) const { return Match(s, strlen(s)); }
+    Match_Result Match(const char* s) const { return Match(s, static_cast<uint32>(strlen(s))); }
 
 #ifdef DEBUG
     void dump_text(const char* = "ac.txt") const;

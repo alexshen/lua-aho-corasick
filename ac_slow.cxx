@@ -1,5 +1,4 @@
 #include <ctype.h>
-#include <strings.h> // for bzero
 #include <algorithm>
 #include "ac_slow.hpp"
 #include "ac.h"
@@ -12,8 +11,7 @@
 //
 ACS_Constructor::ACS_Constructor() : _next_node_id(1) {
     _root = new_state();
-    _root_char = new InputTy[256];
-    bzero((void*)_root_char, 256);
+    _root_char = new InputTy[256]{};
 
 #ifdef VERIFY
     _pattern_buf = 0;

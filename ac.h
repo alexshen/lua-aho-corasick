@@ -4,7 +4,28 @@
 extern "C" {
 #endif
 
-#define AC_EXPORT __attribute__ ((visibility ("default")))
+#ifdef _WIN32
+#  define AC_IMPORT __declspec(dllimport)
+#  define AC_EXPORT __declspec(dllexport)
+#else
+#  if defined(__GNUC__) && __GNUC__ >= 4
+#    define AC_IMPORT __attribute__ ((visibility ("default")))
+#    define AC_EXPORT __attribute__ ((visibility ("default")))
+#  else
+#    define AC_IMPORT
+#    define AC_EXPORT
+#  endif
+#endif
+
+#ifdef AC_BUILD_TYPE_SHARED
+#  ifdef AC_BUILDING_LIB
+#    define AC_API AC_EXPORT
+#  else
+#    define AC_API AC_IMPORT
+#  endif
+#else
+#  define AC_API
+#endif
 
 /* If the subject-string doesn't match any of the given patterns, "match_begin"
  * should be a negative; otherwise the substring of the subject-string,
@@ -27,20 +48,20 @@ struct ac_t;
  *
  * Return the instance on success, or NUL otherwise.
  */
-ac_t* ac_create(const char** pattern_v, unsigned int* pattern_len_v,
-                unsigned int vect_len) AC_EXPORT;
+AC_API ac_t* ac_create(const char** pattern_v, unsigned int* pattern_len_v,
+                       unsigned int vect_len);
 
-ac_result_t ac_match(ac_t*, const char *str, unsigned int len) AC_EXPORT;
+AC_API ac_result_t ac_match(ac_t*, const char *str, unsigned int len);
 
-ac_result_t ac_match_longest_l(ac_t*, const char *str, unsigned int len) AC_EXPORT;
+AC_API ac_result_t ac_match_longest_l(ac_t*, const char *str, unsigned int len);
 
 /* Similar to ac_match() except that it only returns match-begin. The rationale
  * for this interface is that luajit has hard time in dealing with strcture-
  * return-value.
  */
-int ac_match2(ac_t*, const char *str, unsigned int len) AC_EXPORT;
+AC_API int ac_match2(ac_t*, const char *str, unsigned int len);
 
-void ac_free(void*) AC_EXPORT;
+AC_API void ac_free(void*);
 
 #ifdef __cplusplus
 }
